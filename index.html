@@ -1,1 +1,414 @@
+<!DOCTYPE html>
+<html lang="bn">
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>শুভ জন্মদিন</title>
+
+  <!-- Google font for script -->
+  <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4a235a);
+      overflow-x: hidden;
+      color: #ddd;
+      position: relative;
+    }
+
+    /* Background image overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
+      opacity: 0.15;
+      z-index: -1;
+      pointer-events: none;
+      filter: brightness(0.7);
+    }
+
+    /* Container for entire content */
+    #mainContainer {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 0 150px rgba(255, 182, 193, 0.1);
+    }
+
+    /* Input box page */
+    #inputBox {
+      width: 100%;
+      max-width: 360px;
+      background: #2e2b4fcc;
+      border-radius: 16px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      color: #f6e7f7;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    #inputBox h2 {
+      margin-bottom: 18px;
+      font-weight: 600;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+      color: #ffb6c1;
+      text-shadow: 0 0 8px #ffb6c1;
+    }
+
+    #nameInput {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      margin-bottom: 20px;
+      color: #222;
+      font-weight: 600;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #submitBtn {
+      padding: 12px 25px;
+      background: #ff69b4;
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff69b4aa;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #submitBtn:hover {
+      background-color: #ff4f81;
+      box-shadow: 0 0 20px #ff4f81cc;
+    }
+
+    #greetingMsg {
+      margin-top: 18px;
+      font-size: 1.1rem;
+      color: #f8b4d7;
+      min-height: 30px;
+      font-weight: 600;
+      text-shadow: 0 0 7px #f8b4d7;
+    }
+
+    /* Card style */
+    #cardBox {
+      display: none;
+      width: 100%;
+      max-width: 420px;
+      background: #1f1b2ddd;
+      border-radius: 24px;
+      padding: 28px 26px;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
+      animation: popIn 0.8s ease forwards;
+      color: #f8f1f7;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cardBox h1 {
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #ff7ea1;
+      text-shadow: 0 0 8px #ff7ea1aa;
+    }
+
+    /* Name title */
+    #nameTitle {
+      color: #ff87ab;
+      font-weight: 700;
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      text-shadow: 0 0 6px #ff87abcc;
+    }
+
+    /* Emoji */
+    .emoji {
+      font-size: 2.8rem;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+      text-shadow: 0 0 12px #ff4f81;
+    }
+
+    /* Message scroll */
+    .message {
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 10px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #e0c8d8;
+      scrollbar-width: thin;
+      scrollbar-color: #ffadd6 transparent;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .message::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .message::-webkit-scrollbar-thumb {
+      background: #ffadd6;
+      border-radius: 10px;
+    }
+
+    /* Birthday highlight */
+    .highlight-text {
+      font-family: 'Sacramento', cursive;
+      font-size: 2rem;
+      margin-top: 25px;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulseGlow 2.5s ease-in-out infinite;
+      text-align: center;
+      user-select: none;
+      text-shadow: 0 0 10px #ff7eb3aa;
+    }
+
+    /* Animations */
+    @keyframes pulseGlow {
+      0% {
+        text-shadow: 0 0 5px #ff94a9, 0 0 10px #ff7eb3, 0 0 15px #ff6a95;
+        transform: scale(1);
+      }
+
+      50% {
+        text-shadow: 0 0 15px #ffb6c1, 0 0 25px #ff8ecf, 0 0 35px #ff7eb3;
+        transform: scale(1.05);
+      }
+
+      100% {
+        text-shadow: 0 0 5px #ff94a9, 0 0 10px #ff7eb3, 0 0 15px #ff6a95;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* Responsive adjustments for Samsung phone screens */
+    @media only screen and (max-width: 480px) {
+
+      #inputBox,
+      #cardBox {
+        max-width: 320px;
+        padding: 20px 18px;
+      }
+
+      #inputBox h2 {
+        font-size: 1.25rem;
+      }
+
+      #nameInput {
+        font-size: 1rem;
+      }
+
+      #submitBtn {
+        font-size: 1rem;
+        padding: 11px 20px;
+      }
+
+      #cardBox h1 {
+        font-size: 1.7rem;
+      }
+
+      #nameTitle {
+        font-size: 1.3rem;
+      }
+
+      .emoji {
+        font-size: 2.3rem;
+        margin-bottom: 15px;
+      }
+
+      .message {
+        font-size: 1rem;
+        max-height: 240px;
+      }
+
+      .highlight-text {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="mainContainer">
+    <!-- Name Input Box -->
+    <div id="inputBox">
+      <h2>Hey enter your name: </h2>
+      <input type="text" id="nameInput" placeholder="তোমার নাম লিখো" autocomplete="off" />
+      <button id="submitBtn" onclick="submitName()">Submit</button>
+      <div id="greetingMsg" style="display:none;">
+        <p></p>
+      </div>
+    </div>
+
+    <!-- Birthday Card -->
+    <div id="cardBox">
+      <div id="nameTitle"></div>
+      <div class="emoji">🎂🎉🎈</div>
+      <div class="message" id="messageText" tabindex="0">
+        <p>প্রিয় সখী,</p>
+        <p>কিছু কথা...হয়তো অপ্রয়োজনীয় কিন্ত একান্ত আপন। </p>
+        <br>
+        <p>জানোই তো সোমবার একটি অত্যন্ত অপছন্দের দিন আমার। কিন্তু কিছু সোমবারের জন্য অপেক্ষা থাকে...যেমন আজ।</p>
+        <br>
+        <p>এই পথ যদি সত্যি না শেষ হতো... ভাবতে ভাবতে হঠাৎ পথটা সত্যিই শেষ হয়ে যায়। আবার ফিরে আসতে হয় একা। মনের মধ্যে
+          তখনও জেগে থাকে কিছু মুহূর্ত আগের একসাথে থাকার সুখানুভূতি, আর তার পাশে বিচ্ছেদের মন খারাপ। মন খুঁজে ফেরে—সেই
+          একটু আগের মুহূর্তটা, যখন কাধের ওপরে রাখা ছিলো একটি নির্ভরতার হাত... অপেক্ষা শুরু হয় পুনর্মিলনের।</p>
+        <br>
+          <p>জানি, কলম ভোঁতা হয়ে গেছে। হওয়া উচিত ও। এমন গুণমুগ্ধ পঠিকা থাকতেও তাকে অপেক্ষায় রাখার অন্যায়ের শাস্তি। তবু
+          আজ তাকে আবার আঁচড় কাটতেই হবে—কাগজের গায়ে... আমার পাঠিকার মনে জমে থাকা অভিমানের উপরেও।</p>
+        <br>
+        <p>প্রায় একটি দশক। একটি দশকের মধ্যে কত কিছু বদলে যায়! অবসর নেওয়া মেসি ফিরে এসে বিশ্বকাপ জিতে যায়; বারবার
+          নকআউটে হারা ভারত আবার কাপ জিততে শুরু করে; ৪৯ রানে অলআউট হওয়া আরসিবি-ও ট্রফি জিতে নেয়, চন্দ্রযান ২-এর
+          ব্যর্থতার পর চন্দ্রযান ৩ সাফল্য ছুঁয়ে ফেলে। জীবাণুর নরহত্যা, যুদ্ধের উন্মাদনা, পৃথিবীর বুকে মুহুর্মুহু
+          ভূমিকম্পের আর্তনাদ... আরও কত কী ঘটে! আর এর মাঝেই এক সম্পূর্ণ অচেনা মানুষ জীবনের সবচেয়ে বড় বন্ধু হয়ে ওঠে।
+        </p>
+        <br>
+        <p>দশ বছরে বদলায় সবকিছু, আমাদের বন্ধুত্বও বদলেছে— বদলেছে বলতে আগের থেকে আরও প্রগাঢ় হয়েছে। সেদিন কলেজ থেকে
+          ফিরে তোমার সঙ্গে সব দিনলিপি বলার অপেক্ষা করতাম, আজও অফিস শেষে থাকি তোমার অপেক্ষায়। কোন সিদ্ধান্ত নেওয়ার হলে
+          তোমার সহিত আলোচনা না করলে যেন শান্তি হয় না। তুমিই তো আমার নির্ভরতা। আমার সৌভাগ্য। শুধু বন্ধু না, তুমি হয়ে
+          উঠেছো খুব আমার আপন কেউ, আমার লক্ষী!</p>
+        <br>
+        <p>ছাড় ওসব। কিছুই না...জানোই তো কিপটে প্রকৃতির তাই উপহারের বদলে কিছু লিখে মন জয়ের চেষ্টা😛। যদিও সেই মন বারবার
+          আমার দোষেই খারাপ হয় জানি😒। সে হোক.... আজ তোমার শতাব্দীর এক-চতুর্থাংশ পুরনের অভিনন্দন এবং আরও সহস্র শতাব্দী
+          যেন তোমার জীবনে আগমন পূর্বক তাকে রঙ্গিন করে রাখে সেই শুভকামনা সর্বশক্তিমানের কাছে রেখে জানাই ...</p>
+          <br>
+        <p class="highlight-text">শুভ জন্মদিন অপির্তা!!!❤️</p>
+        <br>
+        <p style="font-size: 60%;">বি:দ্র: প্রনাম জানাইবার প্রয়োজন নাই। আমি তোমাকে এখন হতেই আশির্বাদ করিতেছি😛</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" loop>
+    <source
+      src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_1f2fbcf11c.mp3?filename=romantic-ambiance-11392.mp3"
+      type="audio/mpeg" />
+    আপনার ব্রাউজার অডিও সাপোর্ট করে না।
+  </audio>
+
+  <!-- Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+  <script>
+    function submitName() {
+      const inputBox = document.getElementById('inputBox');
+      const cardBox = document.getElementById('cardBox');
+      const nameField = document.getElementById('nameInput').value.trim();
+      const greeting = document.getElementById('greetingMsg');
+      const nameTitle = document.getElementById('nameTitle');
+      const bgMusic = document.getElementById('bgMusic');
+
+      if (!nameField) {
+        greeting.style.display = 'block';
+        greeting.querySelector('p').textContent = 'Please enter your name!';
+        return;
+      }
+
+      const lowerName = nameField.toLowerCase().trim();
+      if (lowerName === 'arpita' || lowerName === 'june' || lowerName === 'bristi') {
+        greeting.style.display = 'block';
+        greeting.querySelector('p').textContent = 'Yes... I was waiting for you. Come and check here is something for you...';
+      } else {
+        greeting.style.display = 'block';
+        greeting.querySelector('p').textContent = 'No I know you are Arpita... Come and check here is something for you';
+      }
+
+      setTimeout(() => {
+        inputBox.style.display = 'none';
+        cardBox.style.display = 'block';
+        nameTitle.textContent = `Hey ${nameField},`;
+
+        // Start confetti repeatedly
+        setInterval(() => {
+          confetti({
+            particleCount: 12,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
+        }, 800);
+
+        // Play background music with fade in
+        bgMusic.volume = 0;
+        bgMusic.play();
+
+        let vol = 0;
+        const fadeInterval = setInterval(() => {
+          if (vol < 0.3) {
+            vol += 0.01;
+            bgMusic.volume = vol;
+          } else {
+            clearInterval(fadeInterval);
+          }
+        }, 150); // ~4 seconds fade-in
+      }, 1800);
+    }
+  </script>
+</body>
+
+</html>
